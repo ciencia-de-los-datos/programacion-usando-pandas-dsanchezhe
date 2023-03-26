@@ -14,6 +14,12 @@ tbl1 = pd.read_csv("tbl1.tsv", sep="\t")
 tbl2 = pd.read_csv("tbl2.tsv", sep="\t")
 
 
+with open ("data.csv", "r") as file:
+    datos = file.readlines()
+datos = [line.replace('\t','|').replace('\n','') for line in datos]
+datos = [line.split('|')for line in datos]
+
+
 def pregunta_01():
     """
     ¿Cuál es la cantidad de filas en la tabla `tbl0.tsv`?
@@ -23,7 +29,11 @@ def pregunta_01():
 
     """
     return
+suma = 0
+    for lista in datos:
+        suma +- int(lista[1])
 
+    return suma
 
 def pregunta_02():
     """
