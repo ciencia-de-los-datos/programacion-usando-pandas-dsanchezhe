@@ -14,6 +14,9 @@ tbl1 = pd.read_csv("tbl1.tsv", sep="\t")
 tbl2 = pd.read_csv("tbl2.tsv", sep="\t")
 
 
+
+
+
 def pregunta_01():
     """
     ¿Cuál es la cantidad de filas en la tabla `tbl0.tsv`?
@@ -22,9 +25,10 @@ def pregunta_01():
     40
 
     """
-    return
-
-
+    
+    N_rows=tbl0.shape[0]
+    return N_rows
+    
 def pregunta_02():
     """
     ¿Cuál es la cantidad de columnas en la tabla `tbl0.tsv`?
@@ -33,7 +37,9 @@ def pregunta_02():
     4
 
     """
-    return
+    n_cols=tbl0.shape[1]
+
+    return n_cols
 
 
 def pregunta_03():
@@ -50,8 +56,8 @@ def pregunta_03():
     Name: _c1, dtype: int64
 
     """
-    return
-
+    group=tbl0.groupby(['_c1'])._c1.count()
+    return group
 
 def pregunta_04():
     """
@@ -65,8 +71,8 @@ def pregunta_04():
     E    4.785714
     Name: _c2, dtype: float64
     """
-    return
-
+    means=tbl0.groupby(['_c1'])._c2.mean()
+    return means
 
 def pregunta_05():
     """
@@ -82,8 +88,8 @@ def pregunta_05():
     E    9
     Name: _c2, dtype: int64
     """
-    return
-
+    maxs=tbl0.groupby(['_c1'])._c2.max()
+    return maxs
 
 def pregunta_06():
     """
@@ -94,8 +100,8 @@ def pregunta_06():
     ['A', 'B', 'C', 'D', 'E', 'F', 'G']
 
     """
-    return
-
+    Mayus=tbl1._c4.sort_values().str.upper().unique().tolist()
+    return Mayus
 
 def pregunta_07():
     """
@@ -110,7 +116,10 @@ def pregunta_07():
     E    67
     Name: _c2, dtype: int64
     """
-    return
+    suma=tbl0.groupby(['_c1'])._c2.sum()
+        
+
+    return suma
 
 
 def pregunta_08():
@@ -128,8 +137,10 @@ def pregunta_08():
     39   39   E    5  1998-01-26    44
 
     """
-    return
+    tbl0['suma']=tbl0._c0+tbl0._c2
 
+
+    return tbl0
 
 def pregunta_09():
     """
@@ -146,7 +157,12 @@ def pregunta_09():
     39   39   E    5  1998-01-26  1998
 
     """
-    return
+    import datetime
+    
+    year_part=lambda x: x.split('-')[0] 
+    tbl0['year']=list(map(year_part,tbl0['_c3']))
+
+    return tbl0
 
 
 def pregunta_10():
@@ -163,8 +179,12 @@ def pregunta_10():
     3   D                  1:2:3:5:5:7
     4   E  1:1:2:3:3:4:5:5:5:6:7:8:8:9
     """
-    return
-
+  
+    tbl0.sort_values(by=['_c1','_c2'],inplace=True)
+    tbl0._c2=tbl0._c2.astype(str)
+    tb=tbl0.groupby(['_c1'])['_c2'].apply(':'.join).reset_index()
+    tb.set_index('_c1',inplace=True)
+    return tb
 
 def pregunta_11():
     """
@@ -182,8 +202,11 @@ def pregunta_11():
     38   38      d,e
     39   39    a,d,f
     """
-    return
-
+    tbl1.sort_values(by=['_c0','_c4'],inplace=True)
+    tb=tbl1.groupby(['_c0'])['_c4'].apply(','.join).reset_index()
+    
+    
+    return tb
 
 def pregunta_12():
     """
@@ -200,7 +223,10 @@ def pregunta_12():
     38   38                    eee:0,fff:9,iii:2
     39   39                    ggg:3,hhh:8,jjj:5
     """
-    return
+    tbl2['_c5']=tbl2._c5a+':'+tbl2._c5b.astype(str)
+    tbl2.sort_values(by=['_c0','_c5'],inplace=True)
+    tb_c=tbl2.groupby(['_c0'])['_c5'].apply(','.join).reset_index()
+    return tb_c
 
 
 def pregunta_13():
@@ -217,4 +243,8 @@ def pregunta_13():
     E    275
     Name: _c5b, dtype: int64
     """
-    return
+    tb=tbl2.merge(tbl0,on='_c0',how='inner').reset_index()
+    tb.sort_values(by=['_c1'],inplace=True)
+    tbf=tb.groupby('_c1')._c5b.sum()
+
+    return tbf
